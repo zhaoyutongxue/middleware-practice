@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
-
+const appError = require('./appError')
 
 
 
@@ -41,7 +41,7 @@ const verifyPassword = (req, res, next) => {
         next();
     }
     // res.send("PASSWORD Needed!")
-    throw new Error('Password needed!')
+    throw new appError('Password needed!', 401);
 }
 
 app.get('/secret', verifyPassword, (req, res) => {
@@ -54,11 +54,17 @@ app.get("/error", (req, res) => {
 
 // define custom error handler. This error handler will run for all errors. 
 // Which means the previous "throw error" will not run. 
+// you can pass the err to the next error handler if you want. So that you can have several error handlers.
+// app.use((err, req, res, next) => {
+//     next(err);
+// })
+
+
 app.use((err, req, res, next) => {
-    console.log("********************");
-    // you can pass the err to the next error handler if you want. So that you can have several error handlers.
-    // next(err);
+    const { status = 500, message = "something went wrong" } = err;
+    res.status(status).send(message)
 })
+
 
 app.use((req, res) => {
     res.status(404).send('NOT FOUND!')
