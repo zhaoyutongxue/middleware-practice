@@ -34,13 +34,14 @@ app.get('/dogs', (req, res) => {
 })
 
 // http://localhost:3000/secret?password=lalala
-// type in the URL above to reveal the secret
+// type in the URL above to reveal the secret. Here we use the query to pass the password to the server. 
 const verifyPassword = (req, res, next) => {
     const { password } = req.query;
     if (password === 'lalala') {
         next();
     }
     // res.send("PASSWORD Needed!")
+    // res.status(401)
     throw new appError('Password needed!', 401);
 }
 
@@ -56,6 +57,12 @@ app.get("/error", (req, res) => {
 // Which means the previous "throw error" will not run. 
 // you can pass the err to the next error handler if you want. So that you can have several error handlers.
 // app.use((err, req, res, next) => {
+//     next(err);
+// })
+
+
+// app.use((err, req, res, next) => {
+//     console.log("********ERROR********")
 //     next(err);
 // })
 
